@@ -2,7 +2,6 @@ fastapi
 uvicorn[standard]
 neo4j
 PyMuPDF
-sentence-transformers
 groq
 python-dotenv
 pydantic>=2.11
