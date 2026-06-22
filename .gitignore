@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# Vector DB
+chroma_data/
+
+# IDEs
+.vscode/
+.idea/
+.gemini/

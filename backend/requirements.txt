@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+neo4j
+PyMuPDF
+sentence-transformers
+groq
+python-dotenv
+pydantic>=2.11
+aiofiles
+python-multipart
+langchain>=0.3
+langchain-groq
+langchain-community
+langgraph>=0.4
+chromadb
+tiktoken

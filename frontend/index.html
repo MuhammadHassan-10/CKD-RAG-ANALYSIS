@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KDIGO CKD Dual RAG Assistant — Compare Traditional vs Agentic RAG with evaluation metrics dashboard.">
+    <title>KDIGO CKD · Dual RAG Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- ─── Header ──────────────────────────────────────────── -->
+        <header class="app-header" id="app-header">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="3"/>
+                        <circle cx="5" cy="6" r="2"/>
+                        <circle cx="19" cy="6" r="2"/>
+                        <circle cx="5" cy="18" r="2"/>
+                        <circle cx="19" cy="18" r="2"/>
+                        <line x1="7" y1="6" x2="10" y2="10"/>
+                        <line x1="17" y1="6" x2="14" y2="10"/>
+                        <line x1="7" y1="18" x2="10" y2="14"/>
+                        <line x1="17" y1="18" x2="14" y2="14"/>
+                    </svg>
+                </div>
+                <div class="header-text">
+                    <h1>KDIGO CKD Assistant</h1>
+                    <p class="header-subtitle">Dual RAG · Evaluation Dashboard</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- Tab navigation -->
+                <nav class="tab-nav" id="tab-nav">
+                    <button class="tab-btn active" data-tab="chat" id="tab-btn-chat">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                        </svg>
+                        Chat
+                    </button>
+                    <button class="tab-btn" data-tab="compare" id="tab-btn-compare">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                        Compare
+                    </button>
+                    <button class="tab-btn" data-tab="dashboard" id="tab-btn-dashboard">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/>
+                            <rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/>
+                            <rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        Dashboard
+                    </button>
+                </nav>
+                <div class="stats-badges" id="stats-badges">
+                    <span class="badge badge-nodes" id="badge-nodes" title="Total graph nodes">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>
+                        <span id="node-count">—</span> nodes
+                    </span>
+                    <span class="badge badge-rels" id="badge-rels" title="Total relationships">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+                        <span id="rel-count">—</span> rels
+                    </span>
+                </div>
+                <button class="btn-ingest" id="btn-ingest" title="Ingest KDIGO PDF into Knowledge Graph">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Ingest PDF
+                </button>
+            </div>
+        </header>
+
+        <!-- ─── Main content area ───────────────────────────────── -->
+        <main class="main-content">
+
+            <!-- ═══ CHAT TAB ═══ -->
+            <div class="tab-panel active" id="panel-chat">
+                <div class="chat-column">
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Welcome message -->
+                        <div class="message assistant-message welcome-message" id="welcome-msg">
+                            <div class="message-avatar">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/>
+                                    <circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/>
+                                    <line x1="7" y1="6" x2="10" y2="10"/><line x1="17" y1="6" x2="14" y2="10"/>
+                                    <line x1="7" y1="18" x2="10" y2="14"/><line x1="17" y1="18" x2="14" y2="14"/>
+                                </svg>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-header">RAG Assistant</div>
+                                <div class="message-text">
+                                    <p>Welcome! I'm your <strong>KDIGO 2024 CKD Guidelines</strong> assistant with <strong>3 RAG modes</strong>.</p>
+                                    <p>Choose a mode below, or go to <strong>Compare</strong> to see how Traditional vs Agentic RAG perform on the same question.</p>
+                                    <div class="welcome-suggestions">
+                                        <button class="suggestion-chip" onclick="askSuggestion(this)">What are the CKD stages?</button>
+                                        <button class="suggestion-chip" onclick="askSuggestion(this)">How is GFR measured?</button>
+                                        <button class="suggestion-chip" onclick="askSuggestion(this)">What medications treat CKD?</button>
+                                        <button class="suggestion-chip" onclick="askSuggestion(this)">Risk factors for CKD progression?</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input area -->
+                    <div class="chat-input-area" id="chat-input-area">
+                        <div class="rag-selector-row">
+                            <label class="rag-selector-label">RAG Mode:</label>
+                            <div class="rag-selector" id="rag-selector">
+                                <button class="rag-option" data-rag="traditional" id="rag-opt-traditional">
+                                    <span class="rag-dot traditional-dot"></span> Traditional
+                                </button>
+                                <button class="rag-option active" data-rag="agentic" id="rag-opt-agentic">
+                                    <span class="rag-dot agentic-dot"></span> Agentic
+                                </button>
+                                <button class="rag-option" data-rag="graph" id="rag-opt-graph">
+                                    <span class="rag-dot graph-dot"></span> Graph RAG
+                                </button>
+                            </div>
+                        </div>
+                        <div class="input-wrapper">
+                            <textarea id="chat-input" placeholder="Ask about CKD guidelines…" rows="1" maxlength="2000"></textarea>
+                            <button class="btn-send" id="btn-send" title="Send message (Enter)">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"/>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
+                    </div>
+                </div>
+
+                <!-- Context side panel -->
+                <aside class="context-panel" id="context-panel">
+                    <div class="panel-header">
+                        <h2>Knowledge Graph Context</h2>
+                        <button class="btn-close-panel" id="btn-close-panel" title="Close panel">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="panel-content" id="panel-content">
+                        <div class="panel-empty">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
+                                <circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/>
+                                <circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/>
+                                <line x1="7" y1="6" x2="10" y2="10"/><line x1="17" y1="6" x2="14" y2="10"/>
+                                <line x1="7" y1="18" x2="10" y2="14"/><line x1="17" y1="18" x2="14" y2="14"/>
+                            </svg>
+                            <p>Graph context will appear here when you ask a question.</p>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+            <!-- ═══ COMPARE TAB ═══ -->
+            <div class="tab-panel" id="panel-compare">
+                <div class="compare-container">
+                    <!-- Compare input -->
+                    <div class="compare-input-section">
+                        <h2 class="compare-title">Compare RAG Pipelines</h2>
+                        <p class="compare-subtitle">Ask the same question to both Traditional and Agentic RAG, then see which performs better.</p>
+                        <div class="compare-input-wrapper">
+                            <textarea id="compare-input" placeholder="Enter a question to compare…" rows="1" maxlength="2000"></textarea>
+                            <button class="btn-compare" id="btn-compare" title="Run comparison">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                                </svg>
+                                Compare
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Comparison results -->
+                    <div class="compare-results" id="compare-results">
+                        <div class="compare-empty">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.2">
+                                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                            </svg>
+                            <p>Enter a question above to compare Traditional vs Agentic RAG.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ DASHBOARD TAB ═══ -->
+            <div class="tab-panel" id="panel-dashboard">
+                <div class="dashboard-container">
+                    <div class="dashboard-header">
+                        <h2 class="dashboard-title">Evaluation Dashboard</h2>
+                        <p class="dashboard-subtitle">Aggregated metrics across all comparisons</p>
+                    </div>
+                    <div class="dashboard-content" id="dashboard-content">
+                        <div class="dashboard-empty">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.2">
+                                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                            </svg>
+                            <p>Run some comparisons first to see aggregated evaluation metrics here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ─── Ingestion progress overlay ──────────────────────── -->
+        <div class="ingest-overlay" id="ingest-overlay">
+            <div class="ingest-modal">
+                <div class="ingest-header">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+                        <line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/>
+                        <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+                        <line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>
+                        <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+                    </svg>
+                    <h3>Ingesting KDIGO PDF</h3>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <p class="progress-text" id="progress-text">Starting ingestion pipeline…</p>
+                <div class="ingest-stats" id="ingest-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Chunks</span>
+                        <span class="stat-value" id="stat-chunks">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Entities</span>
+                        <span class="stat-value" id="stat-entities">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Relations</span>
+                        <span class="stat-value" id="stat-relations">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/index.js"></script>
+</body>
+</html>
