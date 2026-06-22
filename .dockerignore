@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+backend/venv/
+backend/.env
+backend/chroma_data/
+*.egg-info/
+.git/
